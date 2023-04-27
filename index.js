@@ -3,6 +3,8 @@ const express = require('express');
 const path = require('path');
 const users = require('./dbcon')
 const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
+
 const app = express();
 publicpath = path.join(__dirname, "public");
 
@@ -10,14 +12,19 @@ publicpath = path.join(__dirname, "public");
 // publicpath = path.join(path.resolve(),"public");
 
 
-// middlewares
+            // middlewares
 app.use(express.static(publicpath));
 app.use(cookieParser())
-// we can also make a custom middleware for authentication 
-const isAuthenticate = (req, res, next) => {
-    // const token = req.cookies.token   //<--- to take the values from cookies
+                // we can also make a custom middleware for authentication 
+const isAuthenticate = async (req, res, next) => {
+                // const token = req.cookies.token   //<--- to take the values from cookies
     const { token } = req.cookies
     if (token) {
+            // when we get token we have to decode it 
+        const decoded = jwt.verify(token,"secretkey")
+
+        // saving data in req.user to access it all over the code 
+        req.user = await users.findById(decoded._id)
         next();
     } else {
         res.render("login");
@@ -30,23 +37,25 @@ app.use(urlencoded({ exptended: true })); // <-- using this for req.body data
 app.set('view engine', 'ejs');
 
 // app.get('/',(req,res)=>{
-//     // console.log(req.body)
-//     res.render("index")
-// })
-
-app.get('/', isAuthenticate, (req, res) => {
-    res.render('logout');
+    //     // console.log(req.body)
+    //     res.render("index")
+    // })
+    
+    app.get('/', isAuthenticate, (req, res) => {
+        console.log("-->>>>---->",req.user)
+        res.render('logout',{name : req.user.name});
 })
 app.post('/login', async (req, res) => {
 
 
     const { name, email } = req.body
     let user =  await users.create({ name, email });
-    console.log(data)
+
+    const token = jwt.sign({ _id: user._id },"secretkey") // <-- encoded token from user.id
 
     const expiresInMs = 60 * 1000; // 1 minute
     const expirationDate = new Date(Date.now() + expiresInMs);
-    res.cookie("token",user._id, {
+    res.cookie("token",token, {
         httpOnly: true,
         expires: expirationDate,
     });
