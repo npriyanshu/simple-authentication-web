@@ -41,18 +41,18 @@ app.post('/login', async (req, res) => {
 
 
     const { name, email } = req.body
-    let data =  await users.create({ name, email });
+    let user =  await users.create({ name, email });
     console.log(data)
 
     const expiresInMs = 60 * 1000; // 1 minute
     const expirationDate = new Date(Date.now() + expiresInMs);
-    res.cookie("token", "iamhere", {
+    res.cookie("token",user._id, {
         httpOnly: true,
         expires: expirationDate,
     });
     console.log(req.body)
     res.redirect("/")
-    
+
 
 })
 
