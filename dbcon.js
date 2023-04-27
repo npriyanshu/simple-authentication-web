@@ -3,6 +3,7 @@ mongoose.connect('mongodb://localhost:27017/app')
 const users = new mongoose.Schema({
     name:String,
     email:String,
+    password:String
     // date:String,
     // rollno:Number
 })

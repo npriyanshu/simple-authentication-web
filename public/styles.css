@@ -5,16 +5,17 @@
 
 main {
     display: flex;
+    flex-direction: column;
     width: 56vw;
     height: 100vh;
     margin: auto;
-    border: 2px solid black;
     justify-content: center;
     align-items: center;
 }
 
 body {
     background-color: rgb(245, 199, 223);
+    text-align: center;
 }
 
 form {
@@ -22,7 +23,7 @@ form {
     flex-direction: column;
     width: 350px;
     height: 500px;
-    border: 2px solid black;
+    /* border: 2px solid black; */
     align-items: center;
     justify-content: center;
     background-color: rgb(239, 222, 231);
@@ -37,4 +38,7 @@ button{
     padding: 10px 10px;
     width:50% ;
 
+}
+p{
+    color: red;
 }

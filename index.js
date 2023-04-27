@@ -4,13 +4,13 @@ const path = require('path');
 const users = require('./dbcon')
 const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
+const bcrypt = require ("bcrypt")
 
 const app = express();
 publicpath = path.join(__dirname, "public");
 
 // but if type:module in package.json then 
 // publicpath = path.join(path.resolve(),"public");
-
 
             // middlewares
 app.use(express.static(publicpath));
@@ -27,7 +27,8 @@ const isAuthenticate = async (req, res, next) => {
         req.user = await users.findById(decoded._id)
         next();
     } else {
-        res.render("login");
+
+        res.redirect("/login");
     }
 };
 
@@ -42,17 +43,59 @@ app.set('view engine', 'ejs');
     // })
     
     app.get('/', isAuthenticate, (req, res) => {
-        console.log("-->>>>---->",req.user)
         res.render('logout',{name : req.user.name});
 })
-app.post('/login', async (req, res) => {
+
+    app.get('/register', (req, res) => {
+        res.render('register');
+})
+
+    app.get('/login', (req, res) => {
+        res.render('login');
+    })
+    
+    
+    app.post('/login', async (req,res)=>{
+        const {email,password} = req.body;
+        
+        let user = await users.findOne({email});
+        if(!user) return res.redirect('/register')
+        
+        // const isMatched = user.password === password;
+
+    // for bcrypt pass 
+    const isMatched = await bcrypt.compare(password,user.password)
+
+ if(!isMatched) return  res.render("login",{email,message: "incorrect password!"})
+
+const token = jwt.sign({ _id: user._id },"secretkey") // <-- encoded token from user.id
+    
+const expiresInMs = 60 * 1000; // 1 minute
+const expirationDate = new Date(Date.now() + expiresInMs);
+res.cookie("token",token, {
+    httpOnly: true,
+    expires: expirationDate,
+});
+console.log(req.body)
+res.redirect("/") 
+})
 
 
-    const { name, email } = req.body
-    let user =  await users.create({ name, email });
+app.post('/register', async (req, res) => {
 
-    const token = jwt.sign({ _id: user._id },"secretkey") // <-- encoded token from user.id
+    const { name, email ,password} = req.body
+    let user = await users.findOne({email})
+if (user){
+   return  res.redirect('/login')
+}
 
+const hashpass = await bcrypt.hash(password,10) // <--hashing the password
+    user =  await users.create({ name,
+         email ,
+         password:hashpass});
+    
+    const token = jwt.sign({ _id: user._id },"secretkey") // <--encoding token from user.id
+    
     const expiresInMs = 60 * 1000; // 1 minute
     const expirationDate = new Date(Date.now() + expiresInMs);
     res.cookie("token",token, {
@@ -60,38 +103,14 @@ app.post('/login', async (req, res) => {
         expires: expirationDate,
     });
     console.log(req.body)
-    res.redirect("/")
+    res.redirect("/")  
+    
+});
 
-
-})
 
 app.get('/logout', (req, res) => {
     res.clearCookie('token', { path: '/' });
     res.redirect('/');
 });
 
-
-app.get('/success', (req, res) => {
-
-    res.render("success")
-})
-
-
-app.post('/submit', async (req, res) => {
-    /* method 1 */
-    const { name, email, date, rollno } = req.body
-    let data = new users({ name, email, date, rollno });
-    let result = await data.save();
-
-    /* method 2 */
-    // let data = new users(req.body);
-    // let result = await data.save();
-    // console.log(result)
-    // console.log(req.body)
-
-    // res.render("success")
-    //or 
-    res.redirect('/success')
-
-})
 app.listen(5500);
