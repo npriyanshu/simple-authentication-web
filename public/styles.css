@@ -14,24 +14,28 @@ main {
 }
 
 body {
-    background-color: rgb(245, 199, 223);
+    /* background-color: rgb(245, 199, 223); */
+    background: linear-gradient(rgba(255, 145, 0, 0.719),rgba(248, 242, 242, 0.699),rgba(1, 131, 1, 0.712));
     text-align: center;
 }
 
 form {
     display: flex;
+    border-radius: 30px;
     flex-direction: column;
     width: 350px;
     height: 500px;
     /* border: 2px solid black; */
     align-items: center;
     justify-content: center;
-    background-color: rgb(239, 222, 231);
+    /* background-color: rgb(239, 222, 231); */
+    background: linear-gradient(rgba(255, 145, 0, 0.288),rgba(248, 242, 242, 0.267),rgba(1, 131, 1, 0.267));
 }
 input{
     margin: 20px 10px;
     padding: 10px 10px;
     width: 80%;
+    border-radius: 10px;
 }
 button{
     margin: 20px 10px;

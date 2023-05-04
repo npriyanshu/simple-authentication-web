@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
- <style>
+<style>
     main{
         text-align: center;
     }
- </style>
+</style>
     <title>login</title>
 </head>
 <body>
@@ -17,7 +17,8 @@
         <form method="post" action="/login">
             <input type="email" name="email" placeholder="email" value = "<%=locals.email%>"> 
             <input type="password" name="password" placeholder="password">
-            <button type="submit"> login </button>
+            <button type="submit" style="background: rgb(85, 217, 235); border-radius: 10px;"> login </button>
+            <a href="/register"> Register</a>
             <p class="error"> <%= locals.message %> </p>
         </form>
 

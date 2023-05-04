@@ -14,19 +14,20 @@
         }
         button{
             padding: 10px;
-            background-color: red;
+            background-color: rgba(255, 0, 0, 0.692);
             border: 2px solid black;
+            border-radius: 10px;
         }
         body {
-    background-color: rgb(245, 199, 223);
+    background: linear-gradient(rgba(255, 145, 0, 0.719),rgba(248, 242, 242, 0.699),rgba(1, 131, 1, 0.712));
     text-align: center;
 }
     </style>
     <title>Logout</title>
 </head>
-<body>
+<body> 
     <h1>
-       Hi! <%= name %>
+    Hi! <%= name %> <br><hr style="background-color: red; height: 30px; border-radius: 50%;"> <h2>welcome to online Voting System</h2>
     </h1>
     <form action="/logout" method="get">
         <button type="submit">LogOut</button>
