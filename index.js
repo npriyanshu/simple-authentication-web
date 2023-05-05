@@ -66,7 +66,7 @@ app.set('view engine', 'ejs');
     // for bcrypt pass 
     const isMatched = await bcrypt.compare(password,user.password)
 
- if(!isMatched) return  res.render("login",{email,message: "incorrect password!"})
+if(!isMatched) return  res.render("login",{email,message: "incorrect password!"})
 
 const token = jwt.sign({ _id: user._id },"secretkey") // <-- encoded token from user.id
     
@@ -86,13 +86,13 @@ app.post('/register', async (req, res) => {
     const { name, email ,password} = req.body
     let user = await users.findOne({email})
 if (user){
-   return  res.redirect('/login')
+    return  res.redirect('/login')
 }
 
 const hashpass = await bcrypt.hash(password,10) // <--hashing the password
     user =  await users.create({ name,
-         email ,
-         password:hashpass});
+        email ,
+        password:hashpass});
     
     const token = jwt.sign({ _id: user._id },"secretkey") // <--encoding token from user.id
     

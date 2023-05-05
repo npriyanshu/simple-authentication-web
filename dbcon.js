@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/app')
+mongoose.connect('mongodb://0.0.0.0:27017/app')
 const users = new mongoose.Schema({
     name:String,
     email:String,
